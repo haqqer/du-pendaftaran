@@ -1,0 +1,20 @@
+{
+  "name": "du-pendaftaran",
+  "version": "1.0.0",
+  "description": "API pendaftaran Dinus University 2019",
+  "main": "app.js",
+  "author": "doscom",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.2",
+    "multer": "^1.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
+}
