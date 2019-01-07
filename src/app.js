@@ -26,7 +26,6 @@ app.get('/', (req, res) => {
 app.use('/daftar', daftar);
 
 
-app.listen(port, host)
-() => {
+app.listen(port, host, () => {
     console.log('App is running on port '+port);
 })
