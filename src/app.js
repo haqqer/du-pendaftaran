@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 // configuration
 const app = express();
 const port = process.env.PORT || 3000;
+const host = '0.0.0.0';
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 const dbUrl = 'mongodb://localhost:27017/doscomdu';
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 app.use('/daftar', daftar);
 
 
-app.listen(port, () => {
+app.listen(port, host)
+() => {
     console.log('App is running on port '+port);
 })
