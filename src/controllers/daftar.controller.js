@@ -1,16 +1,17 @@
 const multer = require('multer');
 const Daftar = require('../models/daftar.model');
 
-exports.index = (req, res) => {
+exports.index = (req, res, next) => {
     Daftar.find({}, (err, daftars) => {
-        res.json(daftars)
+        if(err) return next(err);
+        res.json(daftars);
     })
 }
 
-exports.store = (req, res) => {
-    let path = 0;
+exports.store = (req, res, next) => {
+    let path = req.file.filename;
     if(path==null) {
-        path = req.file.filename;
+        path = 0;
     }
     let id_status;
     if(req.body.status == null) {
@@ -29,9 +30,24 @@ exports.store = (req, res) => {
         updated_at: Date.now()
     }; 
     let daftar = new Daftar(document);
-    daftar.save();
-    res.status(201).send(daftar)
+    daftar.save((err) => {
+      if(err) {
+          res.status(400).json({"Error": "Duplicate"})
+      } else {
+        res.status(201).send(daftar)
+      }  
+    });
+    
 }
 
-export
-
+exports.delete = (req, res, next) => {
+    Daftar.deleteOne({
+        _id: req.params.id
+    }, (err) => {
+        if(err) {
+            return res.send({'Error': 'Failed Delete'})
+        }
+        res.json({'message': 'Successfully deleted'});
+        next();
+    })
+}
