@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
     res.json({'status': 'ok'});
 })
 
-app.use(express.static(__dirname + '/uploads'));
+app.use('/public', express.static('./src/public/uploads'));
 
 app.use('/daftar', daftar);
 

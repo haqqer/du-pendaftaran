@@ -1,5 +1,6 @@
 const multer = require('multer');
 const Daftar = require('../models/daftar.model');
+const path = require('path');
 
 exports.index = (req, res, next) => {
     Daftar.find({}, (err, daftars) => {
@@ -9,9 +10,10 @@ exports.index = (req, res, next) => {
 }
 
 exports.store = (req, res, next) => {
-    let path = req.file.filename;
-    if(path==null) {
-        path = 0;
+    if(!(req.file.filename)) {
+        file_path = 0;
+    } else {
+        file_path = req.file.filename;
     }
     let id_status;
     if(req.body.status == null) {
@@ -24,7 +26,7 @@ exports.store = (req, res, next) => {
         instansi: req.body.instansi,                                                         
         telp: req.body.telp,                                                         
         id_tele: req.body.id_tele,                                                         
-        bukti: path,
+        bukti: file_path,
         status: id_status,
         created_at: Date.now(),
         updated_at: Date.now()
@@ -32,7 +34,7 @@ exports.store = (req, res, next) => {
     let daftar = new Daftar(document);
     daftar.save((err) => {
       if(err) {
-          res.status(400).json({"Error": "Duplicate"})
+        res.status(400).json({"Error": "Duplicate"})
       } else {
         res.status(201).send(daftar)
       }  
