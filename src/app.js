@@ -9,7 +9,7 @@ if(process.env.NODE_ENV !== 'production') {
 }
 const app = express();
 app.use(cors());
-app.use('/uploads', express.static(__dirname +'/uploads'));
+app.use('/uploads', express.static('uploads'));
 const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
