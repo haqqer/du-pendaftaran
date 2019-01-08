@@ -1,13 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 // configuration
+if(process.env.NODE_ENV !== 'production') {
+	require('dotenv').load();
+}
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-const dbUrl = 'mongodb://localhost:27017/doscomdu';
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/doscomdu';
 
 // MongoDB connection
 mongoose.connect(dbUrl, {useNewUrlParser: true});
