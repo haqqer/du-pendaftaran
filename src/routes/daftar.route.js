@@ -7,7 +7,7 @@ const daftarController = require('../controllers/daftar.controller');
 
 let storage = multer.diskStorage({                                                           
     destination: (req, file, cb) => {                                                    
-            cb(null, __dirname +'/uploads')                                                       
+            cb(null, './uploads')                                                       
     },                                                                                   
     filename: (req, file, cb) => {                                                                                                                                                    
             cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname)        
