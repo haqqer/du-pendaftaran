@@ -45,11 +45,28 @@ exports.store = (req, res, next) => {
 exports.delete = (req, res, next) => {
     Daftar.deleteOne({
         _id: req.params.id
-    }, (err) => {
+    }, (err, daftars) => {
         if(err) {
-            return res.send({'Error': 'Failed Delete'})
+            return handleError(err);
         }
         res.json({'message': 'Successfully deleted'});
         next();
+    })
+}
+// exports.put = (req, res, next) {
+//     Daftar.findById({
+
+//     })
+// }
+
+
+exports.show = (req, res, next) => {
+	Daftar.findById({
+        _id: req.params.id
+    }, (err, daftars) => {
+        if(err) {
+            return res.send(handleError(err))
+        }
+        res.json(daftars);
     })
 }
