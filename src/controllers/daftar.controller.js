@@ -2,14 +2,20 @@ const multer = require('multer');
 const Daftar = require('../models/daftar.model');
 const path = require('path');
 
-exports.index = (req, res, next) => {
-    Daftar.find({}, (err, daftars) => {
-        if(err) return next(err);
-        res.json(daftars);
-    })
+exports.index = async (req, res, next) => {
+    try {
+        await Daftar.find({}, (err, daftars) => {
+            if(err) return next(err);
+            res.json(daftars);
+        })
+    } catch (error) {
+        res.sendStatus(500)
+        next(error)
+    }
+
 }
 
-exports.store = (req, res, next) => {
+exports.store = async (req, res, next) => {
     if(!(req.file.filename)) {
         file_path = 0;
     } else {
@@ -32,41 +38,50 @@ exports.store = (req, res, next) => {
         updated_at: Date.now()
     }; 
     let daftar = new Daftar(document);
-    daftar.save((err) => {
-      if(err) {
-        res.status(400).json({"Error": "Duplicate"})
-      } else {
-        res.status(201).send(daftar)
-      }  
-    });
+    try {
+        await daftar.save((err) => {
+            if(err) {
+                res.status(400).json(err)
+            } else {
+                res.status(201).send(daftar)
+            }  
+        }); 
+    } catch (error) {
+        
+    }
+
     
 }
 
-exports.delete = (req, res, next) => {
-    Daftar.deleteOne({
-        _id: req.params.id
-    }, (err, daftars) => {
-        if(err) {
-            return handleError(err);
-        }
-        res.json({'message': 'Successfully deleted'});
-        next();
-    })
+exports.delete = async (req, res, next) => {
+    try {
+        await Daftar.deleteOne({ _id: req.params.id}, (err, result) => {
+            if (err) {
+                res.status(400).send(err);
+                next(err)
+            }
+            res.json(result);
+        })
+    } catch (error) {
+        res.sendStatus(500)
+        next(error)
+    }
 }
 // exports.put = (req, res, next) {
 //     Daftar.findById({
 
-//     })
+//     }) 
 // }
 
 
-exports.show = (req, res, next) => {
-	Daftar.findById({
-        _id: req.params.id
-    }, (err, daftars) => {
-        if(err) {
-            return res.send(handleError(err))
-        }
-        res.json(daftars);
-    })
+exports.show = async (req, res, next) => {
+    try{
+        await Daftar.findById({ _id: req.params.id }, (err, result) => {
+            if (err) return res.sendStatus(500);
+            res.json(result)
+        })
+    } catch(e) {
+        res.sendStatus(500)
+        next(error)
+    }
 }

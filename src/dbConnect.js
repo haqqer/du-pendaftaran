@@ -11,5 +11,3 @@ mongoose.Promise = global.Promise;
 let db = mongoose.connection;
 
 module.exports = db;
-
-// db.on('error', console.error.bind(console, 'MongoDB Connection error'));
