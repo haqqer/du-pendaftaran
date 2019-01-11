@@ -58,7 +58,7 @@ exports.delete = async (req, res, next) => {
         await Daftar.deleteOne({ _id: req.params.id}, (err, result) => {
             if (err) {
                 res.status(400).send(err);
-                next(err)
+                // next(err)
             }
             res.json(result);
         })
@@ -74,14 +74,15 @@ exports.delete = async (req, res, next) => {
 // }
 
 
-exports.show = async (req, res, next) => {
-    try{
-        await Daftar.findById({ _id: req.params.id }, (err, result) => {
-            if (err) return res.sendStatus(500);
-            res.json(result)
-        })
-    } catch(e) {
-        res.sendStatus(500)
-        next(error)
-    }
+exports.show = async (req, res) => {
+    try {
+    await Daftar.findById({ _id: req.params.id }, async (err, result) => {
+        if (err) {
+            await res.status(400).send(err)
+        }
+        res.json(result)
+    })
+    }  catch(e) {
+        res.status(500).send(e)
+    }  
 }
