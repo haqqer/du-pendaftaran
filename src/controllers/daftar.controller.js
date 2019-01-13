@@ -1,7 +1,7 @@
 const Daftar = require('../models/daftar.model');
 
 exports.index = async (req, res, next) => {
-    await Daftar.find({}, (err, daftars) => {
+    await Daftar.find({}, 'nama email kelas',(err, daftars) => {
         if(err) return res.status(404).send(err);
         res.json(daftars);
     })
@@ -74,4 +74,8 @@ exports.show = async (req, res, next) => {
         res.status(500).send(error);
     }
 
+}
+
+exports.auth = (req, res, next) => {
+    res.send(req.user)
 }

@@ -18,6 +18,7 @@ exports.store = async (req, res, next) => {
             email: req.body.email,
             password: req.body.password
         }
+        console.log(req.body)
         let user = new User(document)
         const result = await user.save();
         res.status(200).json(result)
@@ -37,4 +38,8 @@ exports.delete = async (req, res, next) => {
     } catch (error) {
         res.status(500).send(error)        
     }
+}
+
+exports.auth = (req, res) => {
+    res.json({message: 'login'})
 }
