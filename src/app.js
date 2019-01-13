@@ -26,7 +26,7 @@ app.use(session({
 // Routers
 const daftar = require('./routes/daftar.route');
 const user = require('./routes/user.route');
-const auth = require('./routes/auth.route')(passport)
+const auth = require('./routes/auth.route');
 
 app.use(passport.initialize());
 app.use(passport.session());

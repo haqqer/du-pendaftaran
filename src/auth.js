@@ -24,7 +24,11 @@ exports.login = function(passport) {
                 if(!user) {
                     return done(null, false, {message: 'Incorrect email or password'})
                 }
-                return done(null, user, {message: 'Logged In successfully'})
+                const match = password.validatePassword(password, );
+                if(!match) {
+                    return done(null, false, {message: 'Password wrong'});
+                }
+                return done(null, user, {message: 'Logged In successfully'});
             })
             .catch(err => done(err));
     }));

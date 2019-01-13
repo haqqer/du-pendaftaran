@@ -23,6 +23,7 @@ UserSchema.pre('save', function(next) {
 })
 
 UserSchema.methods.validatePassword = function(password, hash) {
+    console.log('validate')
     return bcrypt.compare(password, hash)
 }
 
