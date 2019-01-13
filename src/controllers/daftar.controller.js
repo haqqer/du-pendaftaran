@@ -1,6 +1,4 @@
-const multer = require('multer');
 const Daftar = require('../models/daftar.model');
-const path = require('path');
 
 exports.index = async (req, res, next) => {
     await Daftar.find({}, (err, daftars) => {
@@ -41,6 +39,7 @@ exports.store = async (req, res, next) => {
     
 }
 
+// DELETE
 exports.delete = async (req, res, next) => {
     try {
         const result = await Daftar.findOneAndDelete({ _id: req.params.id})
@@ -52,6 +51,8 @@ exports.delete = async (req, res, next) => {
     }
 
 }
+
+// PUT
 exports.put = async (req, res, next) => {
     try {
         const result = await Daftar.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true})    
@@ -61,7 +62,7 @@ exports.put = async (req, res, next) => {
     }
 }
 
-
+// SHOW
 exports.show = async (req, res, next) => {
     try {
         const result = await Daftar.findById({ _id: req.params.id})

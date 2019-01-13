@@ -19,8 +19,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 let db = require('./dbConnect');
 db.on('error', console.error.bind(console, 'MongoDB Connection error'));
 
-// Controllers
+// Routers
 const daftar = require('./routes/daftar.route');
+const user = require('./routes/user.route');
 
 app.get('/', (req, res) => {
     res.json({'status': 'running'});
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 app.use('/public', express.static('./src/public/uploads'));
 
 app.use('/daftar', daftar);
+app.use('/user', user);
 
 
 app.listen(port, host, () => {

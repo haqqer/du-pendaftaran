@@ -9,4 +9,6 @@ router.post('/', fileUpload.single('file_upload'), daftarController.store);
 router.delete('/:id', daftarController.delete);
 router.put('/:id', daftarController.put);
 router.get('/:id', daftarController.show);
+
+
 module.exports = router;
