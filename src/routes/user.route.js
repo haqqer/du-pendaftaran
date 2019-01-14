@@ -4,7 +4,7 @@ const auth = require('../auth');
 const userController = require('../controllers/user.controller');
 
 
-router.get('/', auth.checkAuth, userController.index);
+router.get('/', userController.index);
 router.post('/', auth.checkAuth, userController.store);
 router.delete('/:id', auth.checkAuth, userController.delete);
 // router.put('/:id', userController.update);

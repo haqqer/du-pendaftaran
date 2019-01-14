@@ -1,5 +1,12 @@
+const bcrypt = require('bcrypt')
 const LocalStrategy = require('passport-local').Strategy;
 const User = require('./models/user.model')
+
+let isMatch = (password, hash) => {
+    const result = bcrypt.compare(password, hash, null)
+    console.log(result)
+    return result;
+}
 
 exports.login = function(passport) {
     console.log("local")
@@ -19,18 +26,22 @@ exports.login = function(passport) {
         passwordField: 'password'
     },
     function(email, password, done) {
-        User.findOne({email, password})
-            .then(user => {
-                if(!user) {
-                    return done(null, false, {message: 'Incorrect email or password'})
+        // let user = User.find({email: email});
+        // console.log(user)
+        // return done(null, false, {message: "test"})
+        User.findOne({email: email}, (err, user) => {
+            console.log(user.password)
+            if(!user) {
+                return done(null, false, {message: 'Incorrect Email'})
+            }
+            bcrypt.compare(password, user.password, (err, result) => {
+                if(!result) {
+                    return done(null, false, {message: "password wrong"})
                 }
-                const match = password.validatePassword(password, );
-                if(!match) {
-                    return done(null, false, {message: 'Password wrong'});
-                }
-                return done(null, user, {message: 'Logged In successfully'});
+                return done(null, user)
             })
-            .catch(err => done(err));
+            
+        })
     }));
 }
 
