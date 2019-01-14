@@ -9,9 +9,16 @@ let DaftarSchema = new Schema({
     telp: {type: String, required: true, max: 15, unique: true},
     id_tele: {type: String, max: 100, unique: true},
     bukti: {type: String},
-    status: {type: Number},
-    created_at: {type: Date},
-    updated_at: {type: Date}
-})
+    status: {type: Number}
+}, {timestamps: true})
 
+// let handleError = (err, res, next) => {
+//     if(err) {
+//         console.log(err)
+//         // next(new Error('Error'))
+//     } else {
+//         next()
+//     }
+// }
+// DaftarSchema.pre('updateOne', handleError);
 module.exports = mongoose.model('Daftar', DaftarSchema);

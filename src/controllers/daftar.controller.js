@@ -3,16 +3,10 @@ const Daftar = require('../models/daftar.model');
 const path = require('path');
 
 exports.index = async (req, res, next) => {
-    try {
-        await Daftar.find({}, (err, daftars) => {
-            if(err) return next(err);
-            res.json(daftars);
-        })
-    } catch (error) {
-        res.sendStatus(500)
-        next(error)
-    }
-
+    await Daftar.find({}, (err, daftars) => {
+        if(err) return res.status(404).send(err);
+        res.json(daftars);
+    })
 }
 
 exports.store = async (req, res, next) => {
@@ -38,50 +32,43 @@ exports.store = async (req, res, next) => {
         updated_at: Date.now()
     }; 
     let daftar = new Daftar(document);
-    try {
-        await daftar.save((err) => {
-            if(err) {
-                res.status(400).json(err)
-            } else {
-                res.status(201).send(daftar)
-            }  
-        }); 
-    } catch (error) {
-        
-    }
-
-    
+    await daftar.save((err) => {
+        if(err) {
+            return res.status(400).json({message: err.message})
+        }   
+        res.status(201).send(daftar)
+    }); 
 }
 
 exports.delete = async (req, res, next) => {
-    try {
-        await Daftar.deleteOne({ _id: req.params.id}, (err, result) => {
-            if (err) {
-                res.status(400).send(err);
-                next(err)
-            }
-            res.json(result);
-        })
-    } catch (error) {
-        res.sendStatus(500)
-        next(error)
-    }
+    await Daftar.deleteOne({ _id: req.params.id}, (err, result) => {
+        if (err) {
+            return res.status(400).send(err);
+        }
+        if (result == null) {
+            res.json({message: 'Not Found'})
+        }
+        res.status(200).json({message: "Deleted!"});
+    })
 }
-// exports.put = (req, res, next) {
-//     Daftar.findById({
-
-//     }) 
-// }
+exports.put = (req, res, next) => {
+    Daftar.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true}, (err, result) => {
+        if(err) {
+            return res.status(400).json({message: err.message})
+        }
+        res.status(201).send(result);
+    })
+}
 
 
 exports.show = async (req, res, next) => {
-    try{
-        await Daftar.findById({ _id: req.params.id }, (err, result) => {
-            if (err) return res.sendStatus(500);
-            res.json(result)
-        })
-    } catch(e) {
-        res.sendStatus(500)
-        next(error)
-    }
+    await Daftar.findById({ _id: req.params.id}, (err, result) => {
+        if (err) {
+            return res.status(500).send({message: 'Error'})
+        }
+        if (result == null) {
+            return res.json({message: 'Not Found'})
+        }
+        res.send(result)
+    })
 }

@@ -23,7 +23,7 @@ db.on('error', console.error.bind(console, 'MongoDB Connection error'));
 const daftar = require('./routes/daftar.route');
 
 app.get('/', (req, res) => {
-    res.json({'status': 'ok'});
+    res.json({'status': 'running'});
 })
 
 app.use('/public', express.static('./src/public/uploads'));
