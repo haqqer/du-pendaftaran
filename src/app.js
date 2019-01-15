@@ -7,6 +7,7 @@ const cors = require('cors');
 if(process.env.NODE_ENV !== 'production') {
 	require('dotenv').load();
 }
+
 const app = express();
 app.use(cors());
 
@@ -22,11 +23,14 @@ db.on('error', console.error.bind(console, 'MongoDB Connection error'));
 // Controllers
 const daftar = require('./routes/daftar.route');
 
+// Express Static
+app.use('/public', express.static('./src/public/uploads'));
+
 app.get('/', (req, res) => {
     res.json({'status': 'running'});
 })
 
-app.use('/public', express.static('./src/public/uploads'));
+
 
 app.use('/daftar', daftar);
 
