@@ -10,7 +10,6 @@ exports.login = function(passport) {
     })
     
     passport.deserializeUser(function(id, done) {
-        console.log('logout')
         User.findById(id, (err, user) => {
             done(err, user)
         })

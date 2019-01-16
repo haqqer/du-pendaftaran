@@ -8,7 +8,7 @@ const flash = require('connect-flash');
 
 
 require('./utils/auth').login(passport)
-
+const app = express();
 // configuration
 if(process.env.NODE_ENV === 'production') {
 	require('dotenv').load();
@@ -16,7 +16,7 @@ if(process.env.NODE_ENV === 'production') {
     const logger = require('morgan');
     app.use(logger('dev'));
 }
-const app = express();
+
 app.use(cors());
 app.use(flash());
 
