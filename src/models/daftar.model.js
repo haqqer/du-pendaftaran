@@ -12,13 +12,4 @@ let DaftarSchema = new Schema({
     status: {type: Number}
 }, {timestamps: true})
 
-// let handleError = (err, res, next) => {
-//     if(err) {
-//         console.log(err)
-//         // next(new Error('Error'))
-//     } else {
-//         next()
-//     }
-// }
-// DaftarSchema.pre('updateOne', handleError);
 module.exports = mongoose.model('Daftar', DaftarSchema);

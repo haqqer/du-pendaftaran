@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
-// router.get('/login', (req, res, next) => {
-//     res.send(req.flash('error'))
-// })
-router.post('/login', passport.authenticate('local'),  (req, res) => {
+
+router.get('/failLogin', (req, res) => {
+    res.json({message: req.flash('info')[0]});
+})
+
+router.post('/login', passport.authenticate('local',{failureFlash: true, failureRedirect: '/auth/failLogin'}),  (req, res) => {
     res.json({message: "Your Login Now"})
 });
 

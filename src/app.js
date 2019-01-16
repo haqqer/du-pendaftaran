@@ -4,15 +4,17 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const passport = require('passport')
-require('./auth').login(passport)
+const flash = require('connect-flash');
+require('./utils/auth').login(passport)
 
 // configuration
-if(process.env.NODE_ENV !== 'production') {
+if(process.env.NODE_ENV === 'production') {
 	require('dotenv').load();
 }
 
 const app = express();
 app.use(cors());
+app.use(flash());
 
 const port = process.env.PORT || 3000;
 const host = '0.0.0.0';
@@ -33,7 +35,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // DB Connection
-let db = require('./dbConnect');
+let db = require('./utils/dbConnect');
 db.on('error', console.error.bind(console, 'MongoDB Connection error'));
 
 // Express Static
@@ -46,7 +48,9 @@ app.get('/', (req, res) => {
 app.use('/daftar', daftar);
 app.use('/user', user);
 app.use('/auth', auth);
-
+app.all('*', (req, res) => {
+    res.status(404).json({message: 'Not Found'});
+})
 
 app.listen(port, host, () => {
     console.log('App is running on port '+port);

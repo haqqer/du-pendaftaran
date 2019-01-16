@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const fileUpload = require('../fileUpload');
+const fileUpload = require('../utils/fileUpload');
 const daftarController = require('../controllers/daftar.controller');
-const auth = require('../auth');
+const auth = require('../utils/auth');
 
 router.get('/', auth.checkAuth, daftarController.index);
 router.post('/', fileUpload.single('file_upload'), daftarController.store);
