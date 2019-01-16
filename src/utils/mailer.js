@@ -11,11 +11,6 @@ const Mailer = (to, html) => {
       html: '<strong>'+html+'</strong>'
     };
     sgMail.send(msg)
-    // if(sgMail.send(msg)) {
-    //     console.log('ERROR')
-    // } else {
-    //     console.log('SUCCESS')
-    // }
 }
 
 module.exports = Mailer

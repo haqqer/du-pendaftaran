@@ -80,6 +80,14 @@ exports.show = async (req, res, next) => {
 
 }
 
-exports.auth = (req, res, next) => {
-    res.send(req.user)
+exports.search = async (req, res, next) => {
+    try {
+        const result = await Daftar.findOne({email: req.body.email})
+        if(!result) {
+            return res.status(404).json({message: "User not found"})
+        }
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({message: error})
+    }
 }
