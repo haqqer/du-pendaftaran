@@ -19,7 +19,7 @@ app.use(flash());
 const port = process.env.PORT || 3000;
 const host = '0.0.0.0';
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser())
 app.use(session({
     secret: 'dulhur',

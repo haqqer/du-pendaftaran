@@ -9,15 +9,14 @@ exports.index = async (req, res, next) => {
 
 exports.store = async (req, res, next) => {
     try {
+        let id_status;
         if(!req.file) {
             file_path = 0;
+            id_status = 0;
         } else {
             file_path = req.file.filename;
-        }
-        let id_status;
-        if(req.body.status == null) {
-            id_status= 0;
-        }
+            id_status = 0;
+        } 
         let document = {                                                                     
             nama: req.body.nama,                                                         
             email: req.body.email,   
