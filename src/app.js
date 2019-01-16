@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const passport = require('passport')
 const flash = require('connect-flash');
+const logger = require('morgan');
+
 require('./utils/auth').login(passport)
 
 // configuration
@@ -15,7 +17,7 @@ if(process.env.NODE_ENV === 'production') {
 const app = express();
 app.use(cors());
 app.use(flash());
-
+app.use(logger('dev'))
 const port = process.env.PORT || 3000;
 const host = '0.0.0.0';
 app.use(bodyParser.json());
@@ -26,10 +28,9 @@ app.use(session({
     saveUninitialized: true,
     resave: true
 }));
+
 // Routers
-const daftar = require('./routes/daftar.route');
-const user = require('./routes/user.route');
-const auth = require('./routes/auth.route');
+const routes = require('./routes');
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -40,17 +41,8 @@ db.on('error', console.error.bind(console, 'MongoDB Connection error'));
 
 // Express Static
 app.use('/public', express.static('./src/public/uploads'));
+app.use('/api', routes);
 
-app.get('/', (req, res) => {
-    res.json({'status': 'running'});
-})
-
-app.use('/daftar', daftar);
-app.use('/user', user);
-app.use('/auth', auth);
-app.all('*', (req, res) => {
-    res.status(404).json({message: 'Not Found'});
-})
 
 app.listen(port, host, () => {
     console.log('App is running on port '+port);

@@ -1,4 +1,5 @@
 const Daftar = require('../models/daftar.model');
+const mailer = require('../utils/mailer');
 
 exports.index = async (req, res, next) => {
     await Daftar.find({}, 'nama email kelas',(err, daftars) => {
@@ -15,7 +16,7 @@ exports.store = async (req, res, next) => {
             id_status = 0;
         } else {
             file_path = req.file.filename;
-            id_status = 0;
+            id_status = 1;
         } 
         let document = {                                                                     
             nama: req.body.nama,                                                         
@@ -31,6 +32,9 @@ exports.store = async (req, res, next) => {
         };     
         let daftar = new Daftar(document);
         const result = await daftar.save();
+        if(result) {
+            mailer(document.email, "Selamat anda terdaftar di acara DU 2019 di kelas "+document.kelas)
+        }
         res.status(200).json(result)
     } catch (error) {
         res.status(400).json({message: error.message});
@@ -45,6 +49,7 @@ exports.delete = async (req, res, next) => {
         if(!result) {
             return res.json({message: 'Not Found'})
         }
+        res.json({message: "Success Deleted"})
     } catch (error) {
         res.status(500).send(error)
     }
