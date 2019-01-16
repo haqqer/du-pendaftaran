@@ -5,19 +5,21 @@ const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const passport = require('passport')
 const flash = require('connect-flash');
-const logger = require('morgan');
+
 
 require('./utils/auth').login(passport)
 
 // configuration
 if(process.env.NODE_ENV === 'production') {
 	require('dotenv').load();
+} else {
+    const logger = require('morgan');
+    app.use(logger('dev'));
 }
-
 const app = express();
 app.use(cors());
 app.use(flash());
-app.use(logger('dev'))
+
 const port = process.env.PORT || 3000;
 const host = '0.0.0.0';
 app.use(bodyParser.json());
