@@ -1,5 +1,6 @@
 const Daftar = require('../models/daftar.model');
-const mailer = require('../utils/mailer');
+// const mailer = require('../utils/mailer');
+const fs = require('fs');
 
 exports.index = async (req, res, next) => {
     await Daftar.find({}, 'nama email kelas',(err, daftars) => {
@@ -26,15 +27,13 @@ exports.store = async (req, res, next) => {
             telp: req.body.telp,                                                         
             id_tele: req.body.id_tele,                                                         
             bukti: file_path,
-            status: id_status,
-            created_at: Date.now(),
-            updated_at: Date.now()
+            status: id_status
         };     
         let daftar = new Daftar(document);
         const result = await daftar.save();
-        if(result) {
-            mailer(document.email, "Selamat anda terdaftar di acara DU 2019 di kelas "+document.kelas)
-        }
+        // if(result) {
+        //     mailer(document.email, "Selamat anda terdaftar di acara DU 2019 di kelas "+document.kelas)
+        // }
         res.status(200).json(result)
     } catch (error) {
         res.status(400).json({message: error.message});
@@ -59,7 +58,39 @@ exports.delete = async (req, res, next) => {
 // PUT
 exports.put = async (req, res, next) => {
     try {
-        const result = await Daftar.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true})    
+        let id_status;
+        if(!req.file) {
+            file_path = 0;
+            id_status = 0;
+        } else {
+            file_path = req.file.filename;
+            id_status = 1;
+        } 
+        // let document = {                                                                     
+        //     nama: req.body.nama,                                                         
+        //     email: req.body.email,   
+        //     kelas: req.body.kelas,                                                       
+        //     instansi: req.body.instansi,                                                         
+        //     telp: req.body.telp,                                                         
+        //     id_tele: req.body.id_tele,                                                         
+        //     bukti: file_path,
+        //     status: id_status,
+        //     created_at: Date.now(),
+        //     updated_at: Date.now()
+        // };
+        const result = await Daftar.findOneAndUpdate(
+            {_id: req.params.id}, 
+            {$set: {
+                nama: req.body.nama || '',                                                         
+                email: req.body.email || '',   
+                kelas: req.body.kelas || '',                                                       
+                instansi: req.body.instansi || '',                                                         
+                telp: req.body.telp || '',                                                         
+                id_tele: req.body.id_tele || '',                                                         
+                bukti: file_path || '',
+                status: id_status,
+            }}, 
+            {new: true})    
         res.status(201).send(result);
     } catch (error) {
         res.status(400).json({message: err.message})

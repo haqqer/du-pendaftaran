@@ -4,7 +4,6 @@ const User = require('../models/user.model')
 
 
 exports.login = function(passport) {
-    console.log("local")
     passport.serializeUser(function(user, done) {
         done(null, user.id)
     })
@@ -22,7 +21,6 @@ exports.login = function(passport) {
     },
     function(req, email, password, done) {
         User.findOne({email: email}, (err, user, info) => {
-            console.log(user)
             if(!user) {
                 return done(null, false, req.flash('info', 'Incorrect Email'))
             }
