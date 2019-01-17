@@ -58,39 +58,7 @@ exports.delete = async (req, res, next) => {
 // PUT
 exports.put = async (req, res, next) => {
     try {
-        let id_status;
-        if(!req.file) {
-            file_path = 0;
-            id_status = 0;
-        } else {
-            file_path = req.file.filename;
-            id_status = 1;
-        } 
-        // let document = {                                                                     
-        //     nama: req.body.nama,                                                         
-        //     email: req.body.email,   
-        //     kelas: req.body.kelas,                                                       
-        //     instansi: req.body.instansi,                                                         
-        //     telp: req.body.telp,                                                         
-        //     id_tele: req.body.id_tele,                                                         
-        //     bukti: file_path,
-        //     status: id_status,
-        //     created_at: Date.now(),
-        //     updated_at: Date.now()
-        // };
-        const result = await Daftar.findOneAndUpdate(
-            {_id: req.params.id}, 
-            {$set: {
-                nama: req.body.nama || '',                                                         
-                email: req.body.email || '',   
-                kelas: req.body.kelas || '',                                                       
-                instansi: req.body.instansi || '',                                                         
-                telp: req.body.telp || '',                                                         
-                id_tele: req.body.id_tele || '',                                                         
-                bukti: file_path || '',
-                status: id_status,
-            }}, 
-            {new: true})    
+        const result = await Daftar.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true})    
         res.status(201).send(result);
     } catch (error) {
         res.status(400).json({message: err.message})
@@ -111,6 +79,7 @@ exports.show = async (req, res, next) => {
 
 }
 
+// SEARCH by Email
 exports.search = async (req, res, next) => {
     try {
         const result = await Daftar.findOne({email: req.body.email})
@@ -120,5 +89,16 @@ exports.search = async (req, res, next) => {
         res.json(result);
     } catch (error) {
         res.status(400).json({message: error})
+    }
+}
+
+exports.upImage = async (req, res, next) => {
+    try {
+        let file_path = req.file.filename;
+        let id_status = 1;
+        const result = await Daftar.findOneAndUpdate({email: req.body.email}, {$set: {bukti: file_path, status: id_status}}, {new: true})  
+        res.status(201).send(result);
+    } catch (error) {
+        
     }
 }
