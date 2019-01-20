@@ -1,23 +1,31 @@
-const sgMail = require('@sendgrid/mail');
+const nodemailer = require('nodemailer')
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS
+    }
+});
 
-let Mailer = (to, text) => {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    const msg = {
-      to: to,
-      from: 'smtp.sendgrid.net',
-      subject: 'PENDAFTARAN DU',
-      text: 'and easy to do anywhere, even with Node.js',
-      html: '<strong>'+text+'</strong>',
+let mailSender = (to, html) => {
+    console.log("mailer")
+    const document = {
+        from: 'ahmadhaqqi690@gmail.com',
+        to: to,
+        subject: 'PENDAFTARAN DU',
+        html: html
     };
-    sgMail.send(msg);
-    // try {
-    //     const result =   
-    //     if(result) {
-    //       console.log('EMAIL SENT!')
-    //     }
-    // } catch (error) {
-    //     console.log(error)
-    // }
-    
+    transporter.sendMail(document, (err, info) => {
+        if(err) {
+            console.log(err)
+        } else {
+            console.log(info)
+        }
+    })
+
 }
-module.exports = Mailer
+
+module.exports = mailSender

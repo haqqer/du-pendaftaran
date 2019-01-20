@@ -1,7 +1,5 @@
 const Daftar = require('../models/daftar.model');
-// const mailer = require('../utils/mailer');
-const fs = require('fs');
-const json2xls = require('json2xls');
+const mailer = require('../utils/mailer');
 
 exports.index = async (req, res, next) => {
     await Daftar.find({}, 'nama email kelas',(err, daftars) => {
@@ -34,9 +32,10 @@ exports.store = async (req, res, next) => {
         };     
         let daftar = new Daftar(document);
         const result = await daftar.save();
-        // if(result) {
-        //     mailer(document.email, "Selamat anda terdaftar di acara DU 2019 di kelas "+document.kelas)
-        // }
+        if(result) {
+            console.log('preparation mail send')
+            mailer(document.email, "Selamat anda terdaftar di acara DU 2019 di kelas "+document.kelas)
+        }
         res.status(201).json(result)
     } catch (error) {
         res.status(400).json({message: error.message});
