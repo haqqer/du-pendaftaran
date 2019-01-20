@@ -6,6 +6,7 @@ const session = require('express-session')
 const passport = require('passport')
 const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash');
+const json2xls = require('json2xls');
 
 const port = process.env.PORT || 3000;
 const host = '0.0.0.0';
@@ -40,6 +41,7 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
+app.use(json2xls.middleware);
 // Routers
 const routes = require('./routes');
 // Passport initialization

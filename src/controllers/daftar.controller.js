@@ -1,10 +1,12 @@
 const Daftar = require('../models/daftar.model');
 // const mailer = require('../utils/mailer');
 const fs = require('fs');
+const json2xls = require('json2xls');
 
 exports.index = async (req, res, next) => {
     await Daftar.find({}, 'nama email kelas',(err, daftars) => {
         if(err) return res.status(404).send(err);
+        console.log(daftars)
         res.json(daftars);
     })
 }
@@ -102,5 +104,33 @@ exports.upImage = async (req, res, next) => {
         res.status(201).send(result);
     } catch (error) {
         
+    }
+}
+
+exports.export = async (req, res, next) => {
+    try {
+        const data = await Daftar.find().lean().exec({});
+        const kelas = ['Web Basic','Web Intermediate','Android','Network','Game'];
+        const status = ['Belum Bayar','Tunda','Sudah Bayar']
+        let datatoxls = []
+        data.forEach(element => {
+            datatoxls.push({
+                id: element._id,
+                nama: element.nama,
+                email: element.email,
+                kelas: kelas[element.kelas],
+                instansi: element.instansi,
+                telp: element.telp,
+                id_tele: element.id_tele,
+                bukti: req.hostname+'/public/'+element.bukti,
+                status: status[element.status],
+                createdAt: element.createdAt,
+                updatedAt: element.updatedAt
+            })
+        });
+        // const xls = json2xls(data);
+        res.status(200).xls('data.xlsx', datatoxls)
+    } catch (error) {
+        res.json({message: 'Unsuccessfull!'})   
     }
 }
