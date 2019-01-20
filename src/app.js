@@ -40,11 +40,6 @@ app.use(session({
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
-// app.use(cookieSession({
-//     name: "Dulur",
-//     keys: "JustDulhur",
-//     maxAge: 24 * 60 * 60 * 1000
-// }));
 // Routers
 const routes = require('./routes');
 

@@ -1,19 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
+const authController = require('../controllers/auth.controller');
 
+router.get('/failLogin', authController.failLogin);
 
-router.get('/failLogin', (req, res) => {
-    res.json({message: req.flash('info')[0]});
-})
-
-router.post('/login', passport.authenticate('local',{failureFlash: true, failureRedirect: '/auth/failLogin'}),  (req, res) => {
-    res.json({message: "Your Login Now"})
-});
-
-router.get('/logout', (req, res) => {
-    req.logout();
-    res.send({message: "Logout!"})
-});
+router.post('/login', passport.authenticate('local',{failureFlash: true, failureRedirect: 'failLogin'}), authController.login);
+router.get('/logout', authController.logout);
 
 module.exports = router;

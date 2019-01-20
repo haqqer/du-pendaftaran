@@ -9,6 +9,7 @@ exports.index = async (req, res, next) => {
     })
 }
 
+// SAVE
 exports.store = async (req, res, next) => {
     try {
         let id_status;
@@ -34,7 +35,7 @@ exports.store = async (req, res, next) => {
         // if(result) {
         //     mailer(document.email, "Selamat anda terdaftar di acara DU 2019 di kelas "+document.kelas)
         // }
-        res.status(200).json(result)
+        res.status(201).json(result)
     } catch (error) {
         res.status(400).json({message: error.message});
     }
@@ -91,6 +92,7 @@ exports.search = async (req, res, next) => {
         res.status(400).json({message: error})
     }
 }
+
 
 exports.upImage = async (req, res, next) => {
     try {

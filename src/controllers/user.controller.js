@@ -39,7 +39,3 @@ exports.delete = async (req, res, next) => {
         res.status(500).send(error)        
     }
 }
-
-exports.auth = (req, res) => {
-    res.json({message: 'login'})
-}

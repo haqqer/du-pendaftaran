@@ -25,10 +25,12 @@ exports.login = function(passport) {
                 return done(null, false, req.flash('info', 'Incorrect Email'))
             }
             bcrypt.compare(password, user.password, (err, result) => {
+                console.log(result)
                 if(!result) {
+                    
                     return done(null, false, req.flash('info', 'Incorrect Password'))
                 }
-                return done(null, user)
+                return done(null, user, req.flash('info', 'Your login Now'))
             })
             
         })
