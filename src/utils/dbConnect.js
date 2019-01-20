@@ -1,14 +1,11 @@
 const mongoose = require('mongoose');
-const config = require('../../config.json');
-console.log(config['development'].database)
-const defaultConfig = config.development;
-let environment;
 if(process.env.NODE_ENV === 'production') {
-	environment = config[process.env.NODE_ENV].database;
+	require('dotenv').load();
 }
-// MongoDB connection
 
-const dbUrl = environment || defaultConfig.database;
+
+// MongoDB connection
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/du-pendaftaran";
 console.log(environment);
 mongoose.connect(dbUrl, {useNewUrlParser: true});
 mongoose.set('useCreateIndex', true)

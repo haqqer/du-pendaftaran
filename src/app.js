@@ -12,6 +12,7 @@ const host = '0.0.0.0';
 
 require('./utils/auth').login(passport)
 const app = express();
+
 // configuration
 if(process.env.NODE_ENV === 'production') {
 	require('dotenv').load();
@@ -20,12 +21,11 @@ if(process.env.NODE_ENV === 'production') {
     app.use(logger('dev'));
 }
 
-app.use(cors());
-app.use(flash());
-
 // DB Connection
 let db = require('./utils/dbConnect');
 db.on('error', console.error.bind(console, 'MongoDB Connection error'));
+app.use(cors());
+app.use(flash());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser('dulhur'))
@@ -42,11 +42,9 @@ app.use(session({
 }));
 // Routers
 const routes = require('./routes');
-
+// Passport initialization
 app.use(passport.initialize());
 app.use(passport.session());
-
-
 
 // Express Static
 app.use('/public', express.static('./src/public/uploads'));
