@@ -49,6 +49,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Express Static
+app.get('/', (req, res) => {
+    res.send('<h1>INI BUKAN API</h1>')
+})
 app.use('/public', express.static('./src/public/uploads'));
 app.use('/api', routes);
 
