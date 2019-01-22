@@ -51,7 +51,8 @@ app.use(passport.session());
 // Express Static
 app.get('/', (req, res) => {
     res.send('<h1>INI BUKAN API</h1>')
-})
+});
+
 app.use('/public', express.static('./src/public/uploads'));
 app.use('/api', routes);
 
@@ -59,3 +60,5 @@ app.use('/api', routes);
 app.listen(port, host, () => {
     console.log('App is running on port '+port);
 })
+
+module.exports = app;
