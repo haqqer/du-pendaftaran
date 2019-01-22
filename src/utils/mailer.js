@@ -10,10 +10,10 @@ const transporter = nodemailer.createTransport({
 let mailSender = (to, html) => {
     console.log("mailer")
     const document = {
-        from: 'ahmadhaqqi690@gmail.com',
+        from: '"PANITIA DU 2019" ilhamserbaguna@gmail.com',
         to: to,
         subject: 'PENDAFTARAN DU',
-        html: html
+        html: '<h2>'+html+'<h2>'
     };
     transporter.sendMail(document, (err, info) => {
         if(err) {

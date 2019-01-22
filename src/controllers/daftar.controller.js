@@ -1,6 +1,9 @@
 const Daftar = require('../models/daftar.model');
 const mailer = require('../utils/mailer');
 
+const kelas = ['Web Basic','Web Intermediate','Android','Network','Game'];
+const status = ['Belum Bayar','Tunda','Sudah Bayar']
+
 exports.index = async (req, res, next) => {
     await Daftar.find({}, 'nama email kelas',(err, daftars) => {
         if(err) return res.status(404).send(err);
@@ -34,7 +37,7 @@ exports.store = async (req, res, next) => {
         const result = await daftar.save();
         if(result) {
             console.log('preparation mail send')
-            mailer(document.email, "Selamat anda terdaftar di acara DU 2019 di kelas "+document.kelas)
+            mailer(document.email, "Selamat anda terdaftar "+document.nama+" di acara DU 2019 di kelas "+kelas[document.kelas-1])
         }
         res.status(201).json(result)
     } catch (error) {
@@ -109,8 +112,6 @@ exports.upImage = async (req, res, next) => {
 exports.export = async (req, res, next) => {
     try {
         const data = await Daftar.find().lean().exec({});
-        const kelas = ['Web Basic','Web Intermediate','Android','Network','Game'];
-        const status = ['Belum Bayar','Tunda','Sudah Bayar']
         let datatoxls = []
         data.forEach(element => {
             datatoxls.push({

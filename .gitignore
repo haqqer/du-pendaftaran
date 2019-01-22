@@ -2,4 +2,5 @@
 .DS_Store
 .vscode
 config.json
+yarn-error.log
 /*.env
