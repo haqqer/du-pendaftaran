@@ -105,7 +105,7 @@ exports.upload = async (req, res, next) => {
         const result = await Daftar.findOneAndUpdate({email: req.body.email}, {$set: {bukti: file_path, status: id_status}}, {new: true})  
         res.status(201).send(result);
     } catch (error) {
-        
+        res.status(400).json({message: err.message});
     }
 }
 
