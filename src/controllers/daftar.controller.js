@@ -5,7 +5,7 @@ const kelas = ['Web Basic','Web Intermediate','Android','Network','Game'];
 const status = ['Belum Bayar','Tunda','Sudah Bayar']
 
 exports.index = async (req, res, next) => {
-    await Daftar.find({}, 'nama email kelas',(err, daftars) => {
+    await Daftar.find({}, 'nama email kelas status',(err, daftars) => {
         if(err) return res.status(404).send(err);
         console.log(daftars)
         res.json(daftars);
@@ -97,18 +97,19 @@ exports.search = async (req, res, next) => {
     }
 }
 
-
-exports.upImage = async (req, res, next) => {
+// SEARCH and UPLOAD by Email
+exports.upload = async (req, res, next) => {
     try {
         let file_path = req.file.filename;
         let id_status = 1;
         const result = await Daftar.findOneAndUpdate({email: req.body.email}, {$set: {bukti: file_path, status: id_status}}, {new: true})  
         res.status(201).send(result);
     } catch (error) {
-        
+        res.status(400).json({message: err.message});
     }
 }
 
+// EXPORT Daftar to XLSX (excel)
 exports.export = async (req, res, next) => {
     try {
         const data = await Daftar.find().lean().exec({});

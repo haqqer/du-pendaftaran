@@ -41,7 +41,7 @@ exports.checkAuth = (req, res, next) => {
     if(req.isAuthenticated()) {
         next()
     } else {
-        res.status(403).json({message: "Your not login"});
+        res.status(401).json({message: "Your not login"});
     }
 }
 
