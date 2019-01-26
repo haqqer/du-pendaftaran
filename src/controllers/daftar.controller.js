@@ -1,4 +1,5 @@
 const Daftar = require('../models/daftar.model');
+const Kelas = require('../models/kelas.model');
 const mailer = require('../utils/mailer');
 
 const kelas = ['Web Basic','Web Intermediate','Android','Network','Game'];
@@ -32,9 +33,8 @@ exports.store = async (req, res, next) => {
             id_tele: req.body.id_tele,                                                         
             bukti: file_path,
             status: id_status
-        };     
-        let daftar = new Daftar(document);
-        const result = await daftar.save();
+        }; 
+        const result = await Daftar.create(document);
         if(result) {
             console.log('preparation mail send')
             mailer(document.email, "Selamat anda terdaftar "+document.nama+" di acara DU 2019 di kelas "+kelas[document.kelas-1])
