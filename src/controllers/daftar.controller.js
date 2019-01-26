@@ -132,6 +132,19 @@ exports.export = async (req, res, next) => {
         // const xls = json2xls(data);
         res.status(200).xls('data.xlsx', datatoxls)
     } catch (error) {
-        res.json({message: 'Unsuccessfull!'})   
+        res.status(400).json({message: 'Unsuccessfull!'})   
+    }
+}
+
+exports.removeAll = async (req, res) => {
+    try {
+        const result = await Daftar.deleteMany({});
+        if(!result) {
+            res.json({message: "Failed Remove All"})
+        } else {
+            res.json({message: "All Removed!"});
+        }
+    } catch (error) {
+        res.status(400).json({message: 'Unsuccessfull!'})   
     }
 }
