@@ -3,7 +3,7 @@ const router = express.Router();
 const kelasController = require('../controllers/kelas.controller');
 const auth = require('../utils/auth');
 
-router.get('/', auth.checkAuth, kelasController.index);
+router.get('/', kelasController.index);
 router.post('/', auth.checkAuth, kelasController.create);
 router.get('/:id', auth.checkAuth, kelasController.show);
 router.put('/:id', auth.checkAuth, kelasController.update);
