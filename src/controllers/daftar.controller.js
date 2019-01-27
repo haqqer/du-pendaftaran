@@ -2,18 +2,19 @@ const Daftar = require('../models/daftar.model');
 const Kelas = require('../models/kelas.model');
 const mailer = require('../utils/mailer');
 
-const kelas = ['Web Basic','Web Intermediate','Android','Network','Game'];
 const status = ['Belum Bayar','Tunda','Sudah Bayar']
 
+// GET /daftar : INDEX
 exports.index = async (req, res, next) => {
-    await Daftar.find({}, 'nama email kelas status',(err, daftars) => {
-        if(err) return res.status(404).send(err);
-        console.log(daftars)
-        res.json(daftars);
-    })
+    try {
+        const result = await Daftar.find({}, 'nama email kelas status');
+        res.json(result);        
+    } catch (error) {
+        res.status(400).json({message: error});
+    }
 }
 
-// SAVE
+// POST /daftar : SAVE
 exports.store = async (req, res, next) => {
     try {
         let id_status;
@@ -35,9 +36,10 @@ exports.store = async (req, res, next) => {
             status: id_status
         }; 
         const result = await Daftar.create(document);
+        const kelas = await Kelas.findOneAndUpdate({_id: document.kelas}, {$inc : {jumlah: -1}}, {new: true});
         if(result) {
             console.log('preparation mail send')
-            mailer(document.email, "Selamat anda terdaftar "+document.nama+" di acara DU 2019 di kelas "+kelas[document.kelas-1])
+            mailer(document.email, "Selamat anda terdaftar "+document.nama+" di acara DU 2019 di kelas "+kelas)
         }
         res.status(201).json(result)
     } catch (error) {
@@ -46,7 +48,7 @@ exports.store = async (req, res, next) => {
     
 }
 
-// DELETE
+// DELETE /daftar/:id
 exports.delete = async (req, res, next) => {
     try {
         const result = await Daftar.findOneAndDelete({ _id: req.params.id})
@@ -60,7 +62,7 @@ exports.delete = async (req, res, next) => {
 
 }
 
-// PUT
+// GET /daftar/:id : PUT
 exports.put = async (req, res, next) => {
     try {
         const result = await Daftar.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true})    
@@ -70,7 +72,7 @@ exports.put = async (req, res, next) => {
     }
 }
 
-// SHOW
+// GET /daftar/:id : SHOW
 exports.show = async (req, res, next) => {
     try {
         const result = await Daftar.findById({ _id: req.params.id})
@@ -84,7 +86,7 @@ exports.show = async (req, res, next) => {
 
 }
 
-// SEARCH by Email
+// POST /daftar/search : SEARCH by Email
 exports.search = async (req, res, next) => {
     try {
         const result = await Daftar.findOne({email: req.body.email})
@@ -97,7 +99,7 @@ exports.search = async (req, res, next) => {
     }
 }
 
-// SEARCH and UPLOAD by Email
+// PUT /daftar/upload : SEARCH and UPLOAD by Email
 exports.upload = async (req, res, next) => {
     try {
         let file_path = req.file.filename;
@@ -109,7 +111,7 @@ exports.upload = async (req, res, next) => {
     }
 }
 
-// EXPORT Daftar to XLSX (excel)
+// GET /export : EXPORT Daftar to XLSX (excel)
 exports.export = async (req, res, next) => {
     try {
         const data = await Daftar.find().lean().exec({});
@@ -136,6 +138,7 @@ exports.export = async (req, res, next) => {
     }
 }
 
+// DELETE /daftar
 exports.removeAll = async (req, res) => {
     try {
         const result = await Daftar.deleteMany({});
