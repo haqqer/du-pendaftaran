@@ -1,5 +1,6 @@
 const Kelas = require('../models/kelas.model');
 
+// GET /kelas : INDEX
 exports.index = async (req, res) => {
     try {
         const result = await Kelas.find({});

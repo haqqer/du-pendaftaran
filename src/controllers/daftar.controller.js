@@ -36,7 +36,7 @@ exports.store = async (req, res, next) => {
             status: id_status
         }; 
         const result = await Daftar.create(document);
-        const kelas = await Kelas.findOneAndUpdate({_id: document.kelas}, {$inc : {jumlah: -1}}, {new: true});
+        const kelas = await Kelas.findOneAndUpdate({_id: document.kelas}, {$inc : {jumlah: -1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1});
         if(result) {
             console.log('preparation mail send')
             mailer(document.email, "Selamat anda terdaftar "+document.nama+" di acara DU 2019 di kelas "+kelas)
@@ -131,7 +131,6 @@ exports.export = async (req, res, next) => {
                 updatedAt: element.updatedAt
             })
         });
-        // const xls = json2xls(data);
         res.status(200).xls('data.xlsx', datatoxls)
     } catch (error) {
         res.status(400).json({message: 'Unsuccessfull!'})   
@@ -142,6 +141,7 @@ exports.export = async (req, res, next) => {
 exports.removeAll = async (req, res) => {
     try {
         const result = await Daftar.deleteMany({});
+        await Kelas.updateMany({}, {jumlah: 25}, {new: true})
         if(!result) {
             res.json({message: "Failed Remove All"})
         } else {
