@@ -7,7 +7,7 @@ const passport = require('passport')
 const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash');
 const json2xls = require('json2xls');
-
+const path = require('path');
 const port = process.env.PORT || 3000;
 const host = '0.0.0.0';
 
@@ -53,7 +53,7 @@ app.get('/', (req, res) => {
     res.send('<h1>INI BUKAN API</h1>')
 });
 
-app.use('/public', express.static('./src/public'));
+app.use('/public', express.static(path.join(__dirname, 'public/uploads')));
 app.use('/api', routes);
 
 

@@ -1,4 +1,6 @@
-const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer');
+var EmailTemplate = require('email-templates').EmailTemplate;
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
