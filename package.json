@@ -6,6 +6,7 @@
   "author": "doscom",
   "license": "MIT",
   "scripts": {
+    "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "test": "mocha --timeout 10000"
   },
