@@ -39,7 +39,7 @@ exports.store = async (req, res, next) => {
         const kelas = await Kelas.findOneAndUpdate({_id: document.kelas}, {$inc : {jumlah: -1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1});
         if(result) {
             console.log('preparation mail send')
-            mailer(document.email, "Selamat anda terdaftar "+document.nama+" di acara DU 2019 di kelas "+kelas)
+            mailer(document.email, "Selamat"+document.nama+" anda telah terdaftar, di acara DU 2019 di kelas "+kelas.nama)
         }
         res.status(201).json(result)
     } catch (error) {
