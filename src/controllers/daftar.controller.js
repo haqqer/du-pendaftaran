@@ -39,7 +39,7 @@ exports.store = async (req, res, next) => {
         const kelas = await Kelas.findOneAndUpdate({_id: document.kelas}, {$inc : {jumlah: -1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1});
         if(result) {
             console.log('preparation mail send')
-            mailer(document.email, "Selamat"+document.nama+" anda telah terdaftar, di acara DU 2019 di kelas "+kelas.nama)
+            mailer(document.email, "Selamat "+document.nama+" anda telah terdaftar, di acara DU 2019 di kelas "+kelas.nama+" 11 & 18 Mei 2019, di Labolatorium Gedung D, Universitas Dian Nuswantoro, silahkan membayar biaya  pendaftaran 25.0000 melalui transfer rekening MANDIRI 1360016257054 Atas nama maulana muhammadin, atau konfirmasi di Camp Doscom, Gd. D Lt. 1")
         }
         res.status(201).json(result)
     } catch (error) {
