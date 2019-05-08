@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
-var EmailTemplate = require('email-templates').EmailTemplate;
+const EmailTemplate = require('email-templates').EmailTemplate;
+const path = require('path');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -9,21 +10,36 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-let mailSender = (to, html) => {
-    console.log("mailer")
+let mailSender = (mailData) => {
+    console.log("mailer running ..");
+    let templateDir = path.join(__dirname, '..', 'public', 'templates');
+    let template = new EmailTemplate(templateDir);
     const document = {
-        from: '"PANITIA DU 2019" '+process.env.MAIL_USER,
-        to: to,
-        subject: 'PENDAFTARAN DU',
-        html: '<h2>'+html+'<h2>'
-    };
-    transporter.sendMail(document, (err, info) => {
-        if(err) {
-            console.log(err)
-        } else {
-            console.log(info)
+        email: mailData.email,
+        name: mailData.nama,
+        class: mailData.kelas
+    }
+    template.render(document, (err, result) => {
+        if(!err) {
+            const body = {
+                from: '"PANITIA DU 2019" '+process.env.MAIL_USER,
+                to: mailData.email,
+                subject: 'PENDAFTARAN DU',
+                html: result.html
+            };
+            transporter.sendMail(body, (err, info) => {
+                if(err) {
+                    console.log(err);
+                } else {
+                    console.log("SUKSES!");
+                    console.log(info);
+                }
+            })
         }
+
     })
+    
+   
 
 }
 
