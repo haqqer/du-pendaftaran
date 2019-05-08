@@ -12,8 +12,9 @@ const transporter = nodemailer.createTransport({
 
 let mailSender = (mailData) => {
     console.log("mailer running ..");
-    let templateDir = path.join(__dirname, '..', 'public', 'templates');
-    let template = new EmailTemplate(templateDir);
+    // let templateDir = path.join(__dirname, '..', 'public', 'templates');
+    // let template = new EmailTemplate(templateDir)
+    let template = new EmailTemplate('../public/templates');
     const document = {
         email: mailData.email,
         name: mailData.nama,
@@ -35,6 +36,8 @@ let mailSender = (mailData) => {
                     console.log(info);
                 }
             })
+        } else {
+            console.log(err);
         }
 
     })
