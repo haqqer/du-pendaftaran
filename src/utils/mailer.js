@@ -44,3 +44,5 @@ let mailSender = (mailData) => {
         console.log(err);
     })    
 }
+
+module.exports = mailSender;
