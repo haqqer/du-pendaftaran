@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const EmailTemplate = require('email-templates').EmailTemplate;
+const Email = require('email-templates');
 const path = require('path');
 
 const transporter = nodemailer.createTransport({
@@ -8,42 +8,39 @@ const transporter = nodemailer.createTransport({
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS
     }
-});
+})
+
+const templateDir = path.join(__dirname, '..', 'public', 'templates');
+
+const email = new Email({
+    transport: transporter,
+    send: true,
+    preview: false,
+    views: {
+        options: {
+            extension: 'ejs'
+        }
+    }
+})
 
 let mailSender = (mailData) => {
-    console.log("mailer running ..");
-    // let templateDir = path.join(__dirname, '..', 'public', 'templates');
-    // let template = new EmailTemplate(templateDir)
-    let template = new EmailTemplate('../public/templates');
-    const document = {
-        email: mailData.email,
-        name: mailData.nama,
-        class: mailData.kelas
-    }
-    template.render(document, (err, result) => {
-        if(!err) {
-            const body = {
-                from: '"PANITIA DU 2019" '+process.env.MAIL_USER,
-                to: mailData.email,
-                subject: 'PENDAFTARAN DU',
-                html: result.html
-            };
-            transporter.sendMail(body, (err, info) => {
-                if(err) {
-                    console.log(err);
-                } else {
-                    console.log("SUKSES!");
-                    console.log(info);
-                }
-            })
-        } else {
-            console.log(err);
+
+    email.send({
+        template: path.join(__dirname, '..', 'public', 'templates'),
+        message: {
+            from: '"PANITIA DU 2019 "'+process.env.MAIL_USER,
+            to: mailData.email
+        },
+        locals: {
+            email: mailData.email,
+            name: mailData.name,
+            class: mailData.clas
         }
-
     })
-    
-   
-
+    .then(() => {
+        console.log('Email Sent!');
+    })
+    .catch((err) => {
+        console.log(err);
+    })    
 }
-
-module.exports = mailSender
