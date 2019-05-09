@@ -18,7 +18,7 @@ const email = new Email({
     preview: false,
     views: {
         options: {
-            extension: 'ejs'
+            extension: 'hbs'
         }
     }
 })
@@ -34,7 +34,7 @@ let mailSender = (mailData) => {
         locals: {
             email: mailData.email,
             name: mailData.name,
-            class: mailData.clas
+            room: mailData.room
         }
     })
     .then(() => {
