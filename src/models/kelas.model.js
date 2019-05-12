@@ -3,10 +3,7 @@ const Schema = mongoose.Schema;
 
 const KelasSchema = new Schema({
     nama: {type: String, required: true},
-    jadwal: [{
-        tempat: String,
-        waktu: Date
-    }],
+    waktuTempat: {type: Array},
     jumlah: {type: Number}
 },{timestamps: true});
 

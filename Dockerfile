@@ -1,20 +1,20 @@
+# The instructions for the first stage
+FROM node:carbon-alpine as builder
+
+ARG NODE_ENV=development
+ENV NODE_ENV=${NODE_ENV}
+
+RUN apk --no-cache add python make g++
+
+COPY package*.json ./
+RUN yarn install
+
+# The instructions for second stage
 FROM node:carbon-alpine
 
 WORKDIR /usr/src/app
-
-RUN apk --no-cache add --virtual builds-deps build-base python
-
-COPY package*.json ./
-
-RUN yarn install
-
-RUN npm rebuild bcrypt --build-from-source
+COPY --from=builder node_modules node_modules
 
 COPY . .
 
-ENV DB_URL mongodb://172.17.0.2:27017/du-pendaftaran
-
-CMD yarn run start
-
-EXPOSE 3000
-
+CMD [ "yarn", "run", "dev"]
