@@ -42,7 +42,8 @@ exports.store = async (req, res, next) => {
             const mailData = {
                 email: document.email,
                 name: document.nama,
-                room: kelas.nama
+                room: kelas.nama,
+                timePlace: kelas.waktuTempat
             }
             // mailer(document.email, "Selamat "+document.nama+" anda telah terdaftar, di acara DU 2019 di kelas "+kelas.nama+" 11 & 18 Mei 2019, di Labolatorium Gedung D, Universitas Dian Nuswantoro, silahkan membayar biaya  pendaftaran 25.0000 melalui transfer rekening MANDIRI 1360016257054 Atas nama maulana muhammadin, atau konfirmasi di Camp Doscom, Gd. D Lt. 1")
             mailer(mailData);
