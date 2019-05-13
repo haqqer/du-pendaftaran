@@ -32,7 +32,9 @@
 									<span style="color: #bdbdbd;display: block;padding-bottom: 7px;">Kelas Pilihan</span> {{room}}
 								</p>
 								<p style="font-weight: bold; margin-bottom: 5px;">
-									<span style="color: #bdbdbd;display: block;padding-bottom: 7px;">Jadwal </span> {{timePlace[0]}} <br> {{timePlace[1]}}
+									<span style="color: #bdbdbd;display: block;padding-bottom: 7px;">Jadwal </span> 
+									{{#each timePlace as item}}
+									{{item.[0]}} <br> {{item.[1]}}
 								</p>								
 							</div>
 						</div>
