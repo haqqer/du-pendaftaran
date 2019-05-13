@@ -35,7 +35,7 @@ let mailSender = (mailData) => {
             email: mailData.email,
             name: mailData.name,
             room: mailData.room,
-            timePlace: mailData.waktuTempat
+            timePlace: mailData.timePlace
         }
     })
     .then(() => {

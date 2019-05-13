@@ -37,7 +37,7 @@ exports.store = async (req, res, next) => {
         }; 
         const result = await Daftar.create(document);
         const kelas = await Kelas.findOneAndUpdate({_id: document.kelas}, {$inc : {jumlah: -1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1});
-        if(result) {
+        if(result) {    
             console.log('preparation mail send');
             const mailData = {
                 email: document.email,

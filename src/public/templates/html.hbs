@@ -33,8 +33,9 @@
 								</p>
 								<p style="font-weight: bold; margin-bottom: 5px;">
 									<span style="color: #bdbdbd;display: block;padding-bottom: 7px;">Jadwal </span> 
-									{{#each timePlace as item}}
-									{{item.[0]}} <br> {{item.[1]}}
+									{{#each timePlace}}
+									{{.}}
+									{{/each}}
 								</p>								
 							</div>
 						</div>
