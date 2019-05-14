@@ -24,7 +24,7 @@ const email = new Email({
 })
 
 let mailSender = (mailData) => {
-
+	console.log(mailData.timePlace);
     email.send({
         template: path.join(__dirname, '..', 'public', 'templates'),
         message: {

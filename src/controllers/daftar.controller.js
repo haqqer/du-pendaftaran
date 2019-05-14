@@ -2,13 +2,15 @@ const Daftar = require('../models/daftar.model');
 const Kelas = require('../models/kelas.model');
 const mailer = require('../utils/mailer');
 
-const status = ['Belum Bayar','Tunda','Sudah Bayar']
+//const status = ['Belum Bayar','Tunda','Sudah Bayar']
 
 // GET /daftar : INDEX
 exports.index = async (req, res, next) => {
     try {
-        const result = await Daftar.find({}, 'nama email kelas status');
-        res.json(result);        
+        //let result = await Daftar.find({}, 'nama email kelas status');
+	let result = await Daftar.find({}).populate('kelas', 'nama');
+        console.log(result[0].status);
+	res.json(result);        
     } catch (error) {
         res.status(400).json({message: error});
     }
@@ -36,7 +38,8 @@ exports.store = async (req, res, next) => {
             status: id_status
         }; 
         const result = await Daftar.create(document);
-        const kelas = await Kelas.findOneAndUpdate({_id: document.kelas}, {$inc : {jumlah: -1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1});
+	console.log(result);
+        const kelas = await Kelas.findOneAndUpdate({_id: document.kelas}, {$inc : {jumlah: -1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1, waktuTempat: 1});
         if(result) {    
             console.log('preparation mail send');
             const mailData = {
@@ -72,10 +75,28 @@ exports.delete = async (req, res, next) => {
 // GET /daftar/:id : PUT
 exports.put = async (req, res, next) => {
     try {
-        const result = await Daftar.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true})    
+	const getOne = await Daftar.findById({ _id: req.params.id});
+	let kelas_before;
+	let kelas_after;
+	if(req.body.kelas != getOne.kelas) {
+		kelas_before = await Kelas.findOneAndUpdate({_id: getOne.kelas}, {$inc : {jumlah: 1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1, waktuTempat: 1});
+		kelas_after = await Kelas.findOneAndUpdate({_id: req.body.kelas}, {$inc : {jumlah: -1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1, waktuTempat: 1});
+	}
+        const result = await Daftar.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true});
+	if(result) {
+           console.log('preparation mail send');
+           const mailData = {
+               email: getOne.email,
+               name: getOne.nama,
+               room: kelas_after.nama,
+               timePlace: kelas_after.waktuTempat
+           }
+           // mailer(document.email, "Selamat "+document.nama+" anda telah terdaftar, di acara DU 2019 di kelas "+kelas.nama+" 11 & 18 Mei 2019, di Labolator
+           mailer(mailData);
+       }  
         res.status(201).send(result);
     } catch (error) {
-        res.status(400).json({message: err.message})
+        res.status(400).json({message: error.message})
     }
 }
 
@@ -96,7 +117,10 @@ exports.show = async (req, res, next) => {
 // POST /daftar/search : SEARCH by Email
 exports.search = async (req, res, next) => {
     try {
-        const result = await Daftar.findOne({email: req.body.email})
+        //const result = await Daftar.findOne({_id: req.query.value});
+	//const params = { req.query.field: req.query.value};
+	console.log(req.query.s);
+	let result = await Daftar.find({ $text: { $search: req.query.s } }).populate('kelas', 'nama');
         if(!result) {
             return res.status(404).json({message: "User not found"})
         }
@@ -119,28 +143,33 @@ exports.upload = async (req, res, next) => {
 }
 
 // GET /export : EXPORT Daftar to XLSX (excel)
-exports.export = async (req, res, next) => {
+exports.xls = async (req, res) => {
     try {
-        const data = await Daftar.find().lean().exec({});
-        let datatoxls = []
+	const status = ['Belum Bayar','Tunda','Sudah Bayar'];
+        const data = await Daftar.find().populate('kelas', 'nama').lean().exec({});
+	//console.log(data);
+        let datatoxls = [];
         data.forEach(element => {
             datatoxls.push({
                 id: element._id,
                 nama: element.nama,
                 email: element.email,
-                kelas: kelas[element.kelas],
+                kelas: element.kelas.nama,
                 instansi: element.instansi,
                 telp: element.telp,
                 id_tele: element.id_tele,
-                bukti: req.hostname+'/public/'+element.bukti,
+                bukti: element.bukti,
                 status: status[element.status],
                 createdAt: element.createdAt,
                 updatedAt: element.updatedAt
             })
         });
-        res.status(200).xls('data.xlsx', datatoxls)
+	//console.log(datatoxls);
+	const timeset = new Date();
+        res.xls('data'+timeset.getTime()+'.xlsx', datatoxls)
+	//res.status(200).json({message: 'ok'});
     } catch (error) {
-        res.status(400).json({message: 'Unsuccessfull!'})   
+        res.status(400).json({message: error})   
     }
 }
 
