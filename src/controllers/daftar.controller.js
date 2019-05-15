@@ -53,6 +53,7 @@ exports.store = async (req, res, next) => {
         }
         res.status(201).json(result)
     } catch (error) {
+	console.log(error);
         res.status(400).json({message: error.message});
     }
     
@@ -76,24 +77,27 @@ exports.delete = async (req, res, next) => {
 exports.put = async (req, res, next) => {
     try {
 	const getOne = await Daftar.findById({ _id: req.params.id});
+	//console.log(getOne);
 	let kelas_before;
 	let kelas_after;
+	if(req.body.kelas) {
 	if(req.body.kelas != getOne.kelas) {
 		kelas_before = await Kelas.findOneAndUpdate({_id: getOne.kelas}, {$inc : {jumlah: 1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1, waktuTempat: 1});
 		kelas_after = await Kelas.findOneAndUpdate({_id: req.body.kelas}, {$inc : {jumlah: -1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1, waktuTempat: 1});
-	}
-        const result = await Daftar.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true});
-	if(result) {
+	
            console.log('preparation mail send');
            const mailData = {
                email: getOne.email,
                name: getOne.nama,
                room: kelas_after.nama,
-               timePlace: kelas_after.waktuTempat
+               timePlace: kelas_after.waktuTempat,
+	       status: getOne.status
            }
            // mailer(document.email, "Selamat "+document.nama+" anda telah terdaftar, di acara DU 2019 di kelas "+kelas.nama+" 11 & 18 Mei 2019, di Labolator
            mailer(mailData);
-       }  
+	}
+	}
+	const result = await Daftar.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true});  
         res.status(201).send(result);
     } catch (error) {
         res.status(400).json({message: error.message})
@@ -103,9 +107,9 @@ exports.put = async (req, res, next) => {
 // GET /daftar/:id : SHOW
 exports.show = async (req, res, next) => {
     try {
-        const result = await Daftar.findById({ _id: req.params.id})
+        const result = await Daftar.findById({ _id: req.params.id });
         if (!result) {
-            return res.json({message: 'Not Found'})
+            return res.status(404).json({message: 'Not Found'})
         }
         res.send(result)        
     } catch (error) {
