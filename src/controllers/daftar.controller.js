@@ -227,10 +227,12 @@ exports.removeAll = async (req, res) => {
 exports.status = async (req, res) => {
     try {
         let query;
-        if(req.query.email) {
+        if(req.query.email && req.query.s) {
             query = { email: req.query.email, status: req.query.s }
+        } else if(req.query.email) {
+            query = { email: req.query.email }            
         } else {
-            query = { status: req.query.s }            
+            query = { email: req.query.s }            
         }
         let result = await Daftar.find(query).populate('kelas', 'nama');
         let data = [];
