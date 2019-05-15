@@ -137,8 +137,10 @@ exports.show = async (req, res, next) => {
 // POST /daftar/search : SEARCH by Email
 exports.search = async (req, res, next) => {
     try {
+        console.log(req.query.field);
         console.log(req.query.s);
-        let result = await Daftar.find({ $text: { $search: req.query.s } }).populate('kelas', 'nama');
+        // let result = await Daftar.find({ $text: { $search: req.query.s } }).populate('kelas', 'nama');
+        let result = await Daftar.find({ "req.query.field": "req.query.s" }).populate('kelas', 'nama');
         let data = [];
         result.forEach(element => {
             data.push({
@@ -219,5 +221,33 @@ exports.removeAll = async (req, res) => {
         }
     } catch (error) {
         res.status(400).json({message: 'Unsuccessfull!'})   
+    }
+}
+
+exports.status = async (req, res) => {
+    try {
+        let result = await Daftar.find({ email: req.query.email, status: req.query.s }).populate('kelas', 'nama');
+        let data = [];
+        result.forEach(element => {
+            data.push({
+                id: element._id,
+                nama: element.nama,
+                email: element.email,
+                kelas: element.kelas.nama,
+                instansi: element.instansi,
+                telp: element.telp,
+                id_tele: element.id_tele,
+                bukti: element.bukti,
+                status: status[element.status],
+                createdAt: element.createdAt,
+                updatedAt: element.updatedAt
+            })
+        });
+        if(!result) {
+            return res.status(404).json({message: "User not found"})
+        }
+        res.json({count: data.length, result: data});
+    } catch(error) {
+        res.status(400).json({message: error})   
     }
 }
