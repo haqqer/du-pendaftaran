@@ -226,7 +226,13 @@ exports.removeAll = async (req, res) => {
 
 exports.status = async (req, res) => {
     try {
-        let result = await Daftar.find({ email: req.query.email, status: req.query.s }).populate('kelas', 'nama');
+        let query;
+        if(req.query.email) {
+            query = { email: req.query.email, status: req.query.s }
+        } else {
+            query = { status: req.query.s }            
+        }
+        let result = await Daftar.find(query).populate('kelas', 'nama');
         let data = [];
         result.forEach(element => {
             data.push({
