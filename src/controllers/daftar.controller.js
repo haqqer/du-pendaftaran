@@ -2,15 +2,31 @@ const Daftar = require('../models/daftar.model');
 const Kelas = require('../models/kelas.model');
 const mailer = require('../utils/mailer');
 
-//const status = ['Belum Bayar','Tunda','Sudah Bayar']
+const status = ['Belum Bayar','Tunda','Sudah Bayar']
 
 // GET /daftar : INDEX
 exports.index = async (req, res, next) => {
     try {
         //let result = await Daftar.find({}, 'nama email kelas status');
-	let result = await Daftar.find({}).populate('kelas', 'nama');
-        console.log(result[0].status);
-	res.json(result);        
+        let result = await Daftar.find({}).populate('kelas', 'nama');
+        let data = [];
+        result.forEach(element => {
+            data.push({
+                id: element._id,
+                nama: element.nama,
+                email: element.email,
+                kelas: element.kelas.nama,
+                instansi: element.instansi,
+                telp: element.telp,
+                id_tele: element.id_tele,
+                bukti: element.bukti,
+                status: status[element.status],
+                createdAt: element.createdAt,
+                updatedAt: element.updatedAt
+            })
+        });
+            // console.log(result[0].status);
+        res.json(result);        
     } catch (error) {
         res.status(400).json({message: error});
     }
@@ -76,28 +92,28 @@ exports.delete = async (req, res, next) => {
 // GET /daftar/:id : PUT
 exports.put = async (req, res, next) => {
     try {
-	const getOne = await Daftar.findById({ _id: req.params.id});
-	//console.log(getOne);
-	let kelas_before;
-	let kelas_after;
-	if(req.body.kelas) {
-	if(req.body.kelas != getOne.kelas) {
-		kelas_before = await Kelas.findOneAndUpdate({_id: getOne.kelas}, {$inc : {jumlah: 1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1, waktuTempat: 1});
-		kelas_after = await Kelas.findOneAndUpdate({_id: req.body.kelas}, {$inc : {jumlah: -1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1, waktuTempat: 1});
-	
-           console.log('preparation mail send');
-           const mailData = {
-               email: getOne.email,
-               name: getOne.nama,
-               room: kelas_after.nama,
-               timePlace: kelas_after.waktuTempat,
-	       status: getOne.status
-           }
-           // mailer(document.email, "Selamat "+document.nama+" anda telah terdaftar, di acara DU 2019 di kelas "+kelas.nama+" 11 & 18 Mei 2019, di Labolator
-           mailer(mailData);
-	}
-	}
-	const result = await Daftar.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true});  
+        const getOne = await Daftar.findById({ _id: req.params.id});
+        //console.log(getOne);
+        let kelas_before;
+        let kelas_after;
+        if(req.body.kelas) {
+            if(req.body.kelas != getOne.kelas) {
+                kelas_before = await Kelas.findOneAndUpdate({_id: getOne.kelas}, {$inc : {jumlah: 1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1, waktuTempat: 1});
+                kelas_after = await Kelas.findOneAndUpdate({_id: req.body.kelas}, {$inc : {jumlah: -1}}, {new: true}).select({nama: 1, _id: 0, jumlah: 1, waktuTempat: 1});
+            
+                console.log('preparation mail send');
+                const mailData = {
+                    email: getOne.email,
+                    name: getOne.nama,
+                    room: kelas_after.nama,
+                    timePlace: kelas_after.waktuTempat,
+                    status: getOne.status
+                }
+                // mailer(document.email, "Selamat "+document.nama+" anda telah terdaftar, di acara DU 2019 di kelas "+kelas.nama+" 11 & 18 Mei 2019, di Labolator
+                mailer(mailData);
+            }
+        }
+        const result = await Daftar.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true});  
         res.status(201).send(result);
     } catch (error) {
         res.status(400).json({message: error.message})
@@ -149,7 +165,7 @@ exports.upload = async (req, res, next) => {
 // GET /export : EXPORT Daftar to XLSX (excel)
 exports.xls = async (req, res) => {
     try {
-	const status = ['Belum Bayar','Tunda','Sudah Bayar'];
+	// const status = ['Belum Bayar','Tunda','Sudah Bayar'];
         const data = await Daftar.find().populate('kelas', 'nama').lean().exec({});
 	//console.log(data);
         let datatoxls = [];
