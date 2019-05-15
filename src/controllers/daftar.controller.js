@@ -232,7 +232,7 @@ exports.status = async (req, res) => {
         } else if(req.query.email) {
             query = { email: req.query.email }            
         } else {
-            query = { email: req.query.s }            
+            query = { status: req.query.s }            
         }
         let result = await Daftar.find(query).populate('kelas', 'nama');
         let data = [];
@@ -256,6 +256,27 @@ exports.status = async (req, res) => {
         }
         res.json({count: data.length, result: data});
     } catch(error) {
-        res.status(400).json({message: error})   
+        res.status(400).json({message: error});   
+    }
+}
+
+exports.send = (req, res, next) => {
+    try{
+        const getOne = await Daftar.findOne({ email: req.body.email });
+        const kelas = await Kelas.findOne({_id: document.kelas}).select({nama: 1, _id: 0, jumlah: 1, waktuTempat: 1});
+        if(getOne) {    
+            console.log('preparation mail send');
+            const mailData = {
+                email: getOne.email,
+                name: getOne.nama,
+                room: kelas.nama,
+                timePlace: kelas.waktuTempat
+            }
+            // mailer(document.email, "Selamat "+document.nama+" anda telah terdaftar, di acara DU 2019 di kelas "+kelas.nama+" 11 & 18 Mei 2019, di Labolatorium Gedung D, Universitas Dian Nuswantoro, silahkan membayar biaya  pendaftaran 25.0000 melalui transfer rekening MANDIRI 1360016257054 Atas nama maulana muhammadin, atau konfirmasi di Camp Doscom, Gd. D Lt. 1")
+            mailer(mailData);
+        }
+        res.status(200).json({message: "Email to "+getOne.email+", has been sent!"});
+    } catch(error) {
+        res.status(400).json({message: error});
     }
 }
